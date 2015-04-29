@@ -30,6 +30,3 @@ convos-service is site messaging micro service.
     $ php artisan serve
 
 ## Requirements
-
-convos-service is built with [Lumen](http://lumen.laravel.com/). For details on how to install Lumen, please refer to
-the project documentation [http://lumen.laravel.com/docs/installation](http://lumen.laravel.com/docs/installation).
