@@ -11,6 +11,20 @@
 |
 */
 
-$app->get('/', function() use ($app) {
+
+$app->group(['prefix' => 'api/v1'], function ($app) {
+
+    $app->post('users', 'App\Http\Controllers\UserController@create');
+    $app->delete('users/{id:[0-9]+}', 'App\Http\Controllers\UserController@delete');
+
+});
+
+$app->group(['prefix' => 'api/v1', 'middleware' => 'auth'], function($app)
+{
+    $app->get('convos', 'App\Http\Controllers\ConvoController@get_convos');
+
+});
+
+$app->get('/', function () use ($app) {
     return $app->welcome();
 });
