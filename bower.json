@@ -1,0 +1,24 @@
+{
+  "name": "convos-service",
+  "version": "0.0.1",
+  "homepage": "https://github.com/gvnn/convos-service",
+  "authors": [
+    "Giovanni Ferron <gvnnrulez@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "resources/assets/components",
+    "test",
+    "tests"
+  ],
+  "moduleType": [
+    "node"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.4",
+    "bootstrap": "~3.3.4"
+  }
+}
