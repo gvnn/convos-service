@@ -13,6 +13,12 @@
 
 Route::get('/', 'WelcomeController@index');
 
-Route::post('oauth/access_token', function() {
+Route::group(['prefix' => '/api/v1'], function () {
+    Route::get('convos', ['before' => 'oauth', function () {
+        return 'ok';
+    }]);
+});
+
+Route::post('oauth/access_token', function () {
     return Response::json(Authorizer::issueAccessToken());
 });
