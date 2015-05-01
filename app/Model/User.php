@@ -1,4 +1,4 @@
-<?php namespace App\Models;
+<?php namespace App\Model;
 
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
@@ -34,12 +34,6 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
     public function conversations()
     {
-        return $this->hasManyThrough('App\Models\Convos\Conversation', 'App\Models\Convos\Participant');
+        return $this->hasManyThrough('App\Model\Convos\Conversation', 'App\Model\Model\Participant');
     }
-
-    public function getId()
-    {
-        return $this->id;
-    }
-
 }
