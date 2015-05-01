@@ -31,7 +31,7 @@ class ConvosController extends Controller
 
     public function create(Request $request)
     {
-        $convo = $this->service->create(Auth::user(), Request::all());
+        $convo = $this->service->createConversation(Auth::user(), Request::all());
         return $convo->toJson();
     }
 

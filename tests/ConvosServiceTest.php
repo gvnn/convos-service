@@ -28,7 +28,7 @@ class ConvosServiceTest extends TestCase
     public function testCreateValidation()
     {
         $convoService = new ConvosService(new ConvosRepository());
-        $convoService->create(1, []);
+        $convoService->createConversation(1, []);
     }
 
     public function testCreate()
@@ -55,7 +55,7 @@ class ConvosServiceTest extends TestCase
         $recipient = $users->get(1)->id;
         $body = $this->faker->paragraph();
 
-        $convo = $convoService->create($users->get(0)->id, [
+        $convo = $convoService->createConversation($users->get(0)->id, [
             'subject' => $subject,
             'recipient' => $recipient,
             'body' => $body
@@ -71,7 +71,7 @@ class ConvosServiceTest extends TestCase
         $convoService = new ConvosService(new ConvosRepository());
         $convo = $this->_newConvo($users, $convoService);
         // add message
-        $message = $convoService->addMessage($convo->id, [
+        $message = $convoService->addConverstationMessage($convo->id, [
             'user_id' => $users->get(1)->id,
             'body' => $this->faker->paragraph()
         ]);
@@ -97,34 +97,34 @@ class ConvosServiceTest extends TestCase
         $convo = $this->_newConvo($users, $convoService);
         // create 9 messages... one is already created by the nw convo call
         for ($x = 0; $x <= 8; $x++) {
-            $convoService->addMessage($convo->id, [
+            $convoService->addConverstationMessage($convo->id, [
                 'user_id' => $users->get($x % 2)->id,
                 'body' => $this->faker->paragraph()
             ]);
         }
 
-        $result = $convoService->getConvoMessages($convo->id, $users->get(0)->id);
+        $result = $convoService->getConverstationMessages($convo->id, $users->get(0)->id);
         $this->assertEquals(10, sizeof($result['messages']));
         $this->assertEquals(10, $result['pagination']['count']);
         $this->assertEquals(1, $result['pagination']['page']);
         $this->assertEquals(25, $result['pagination']['limit']);
 
 
-        $result = $convoService->getConvoMessages($convo->id, $users->get(1)->id, $limit = 2);
+        $result = $convoService->getConverstationMessages($convo->id, $users->get(1)->id, $limit = 2);
         $this->assertEquals(10, $result['pagination']['count']);
         $this->assertEquals(2, sizeof($result['messages']));
 
-        $result = $convoService->getConvoMessages($convo->id, $users->get(0)->id, $limit = 3, $page = 2);
+        $result = $convoService->getConverstationMessages($convo->id, $users->get(0)->id, $limit = 3, $page = 2);
         $this->assertEquals(10, $result['pagination']['count']);
         $this->assertEquals(3, sizeof($result['messages']));
 
-        $result = $convoService->getConvoMessages(
+        $result = $convoService->getConverstationMessages(
             $convo->id, $users->get(1)->id, $limit = 1, $page = 1, $until = Carbon::yesterday()->toIso8601String()
         );
         $this->assertEquals(0, $result['pagination']['count']);
         $this->assertEquals(0, sizeof($result['messages']));
 
-        $result = $convoService->getConvoMessages($convo->id, $this->faker->numberBetween($min = 1000, $max = 9000));
+        $result = $convoService->getConverstationMessages($convo->id, $this->faker->numberBetween($min = 1000, $max = 9000));
         $this->assertEquals(0, sizeof($result['messages']));
     }
 
@@ -149,7 +149,7 @@ class ConvosServiceTest extends TestCase
         sleep(1);
 
         // I add a message to the last convo and it should go on top of the list
-        $convoService->addMessage($convos[0]->id, [
+        $convoService->addConverstationMessage($convos[0]->id, [
             'user_id' => $users->get(1)->id,
             'body' => $this->faker->paragraph()
         ]);
@@ -159,4 +159,56 @@ class ConvosServiceTest extends TestCase
         $result = $convoService->getConversations($users->get(1)->id, $limit = 1);
         $this->assertEquals($convos[0]->id, $result['conversations'][0]->id);
     }
+
+    public function testDeleteConversation()
+    {
+        $users = \App\Model\User::all();
+        $convoService = new ConvosService(new ConvosRepository());
+
+        // create 1 convos
+        $convo = $this->_newConvo($users, $convoService);
+
+        // delete the convo for user 1
+        $convoService->deleteConversation($convo->id, $users->get(0)->id);
+
+        // get the list, only user 2 should have this conversation
+        $result = $convoService->getConversations($users->get(0)->id, $limit = 1);
+        $this->assertEquals(0, $result['pagination']['count']);
+        $result = $convoService->getConversations($users->get(1)->id, $limit = 1);
+        $this->assertEquals(1, $result['pagination']['count']);
+    }
+
+    /**
+     * @expectedException \Illuminate\Database\Eloquent\ModelNotFoundException
+     */
+    public function testDeleteMessage()
+    {
+        $users = \App\Model\User::all();
+        $convoService = new ConvosService(new ConvosRepository());
+
+        // create 1 convos
+        $convo = $this->_newConvo($users, $convoService);
+
+        // user 2 tries to delete a message and throws an exeption
+        $convoService->deleteConversationMessage(
+            $convo->id,
+            $users->get(1)->id,
+            $convo->messages->get(0)->id
+        );
+
+        // user 1 deletes and it's all fine
+        $convoService->deleteConversationMessage(
+            $convo->id,
+            $users->get(0)->id,
+            $convo->messages->get(0)->id
+        );
+
+        // no more messages
+        $result = $convoService->getConverstationMessages($convo->id, $users->get(0)->id);
+        $this->assertEquals(0, $result['pagination']['count']);
+
+        $result = $convoService->getConverstationMessages($convo->id, $users->get(1)->id);
+        $this->assertEquals(0, $result['pagination']['count']);
+    }
+
 }

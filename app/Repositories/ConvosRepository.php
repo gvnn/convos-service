@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 class ConvosRepository implements ConvosRepositoryInterface
 {
 
-    public function createConvo($userId, $subject)
+    public function createConversation($userId, $subject)
     {
         $convo = new Conversation;
 
@@ -22,7 +22,7 @@ class ConvosRepository implements ConvosRepositoryInterface
         return $convo;
     }
 
-    public function addConvoParticipants(Conversation $convo, $creator, array $participants)
+    public function addConverstationParticipants(Conversation $convo, $creator, array $participants)
     {
         $participantsArray = [
             new Participant(['user_id' => $creator, 'is_creator' => true, 'is_read' => true, 'read_at' => Carbon::now()])
@@ -43,7 +43,7 @@ class ConvosRepository implements ConvosRepositoryInterface
         return $convo;
     }
 
-    public function addMessage(Conversation $convo, $userId, $body)
+    public function addConverstationMessage(Conversation $convo, $userId, $body)
     {
         $message = new Message([
             'user_id' => $userId,
@@ -71,12 +71,12 @@ class ConvosRepository implements ConvosRepositoryInterface
         return $message;
     }
 
-    public function getConvo($convoId)
+    public function getConversation($convoId)
     {
-        return Conversation::find($convoId);
+        return Conversation::findOrFail($convoId);
     }
 
-    public function getConvoMessages($convoId, $userId, array $pagination)
+    public function getConversationMessages($convoId, $userId, array $pagination)
     {
         $messagesTable = with(new Message)->getTable();
         $participantsTable = with(new Participant)->getTable();
@@ -137,5 +137,30 @@ class ConvosRepository implements ConvosRepositoryInterface
         ];
 
         return $result;
+    }
+
+    public function deleteConversation($convoId, $userId)
+    {
+        //find a participation
+        $participant = Participant::where(
+            'conversation_id', $convoId
+        )->where('user_id', $userId)->firstOrFail();
+
+        $convo = $participant->conversation;
+
+        $participant->delete();
+
+        return $convo;
+    }
+
+    public function deleteConversationMessage($convoId, $userId, $messageId)
+    {
+        // find message, only the creator can delete that
+        $message = Message::where('conversation_id', $convoId)
+            ->where('user_id', $userId)->firstOrFail();
+
+        $message->delete();
+
+        return $message;
     }
 }

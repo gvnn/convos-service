@@ -4,15 +4,19 @@ use App\Model\Convos\Conversation;
 
 interface ConvosRepositoryInterface
 {
-    public function createConvo($userId, $subject);
+    public function createConversation($userId, $subject);
 
-    public function addConvoParticipants(Conversation $convo, $creator, array $participants);
+    public function addConverstationParticipants(Conversation $convo, $creator, array $participants);
 
-    public function addMessage(Conversation $convo, $userId, $body);
+    public function addConverstationMessage(Conversation $convo, $userId, $body);
 
-    public function getConvo($convoId);
+    public function getConversation($convoId);
 
-    public function getConvoMessages($convoId, $userId, array $pagination);
+    public function getConversationMessages($convoId, $userId, array $pagination);
 
     public function getConversations($userId, array $pagination);
+
+    public function deleteConversation($convoId, $userId);
+
+    public function deleteConversationMessage($convoId, $userId, $messageId);
 }
