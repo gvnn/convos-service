@@ -3,7 +3,9 @@ namespace App\Services;
 
 use App\Model\ConvosException;
 use App\Repositories\ConvosRepositoryInterface;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
+use Mockery\CountValidator\Exception;
 
 class ConvosService implements ConvosServiceInterface
 {
@@ -69,5 +71,47 @@ class ConvosService implements ConvosServiceInterface
         ]);
 
         return $this->repository->getConvo($convoId);
+    }
+
+    public function getConvoMessages($convoId, $limit = 25, $page = 1, $until = null)
+    {
+        // limit is default 25 / max 100
+        $intLimit = $this->_tryParseInt($limit, 25);
+        if ($intLimit > 100) $intLimit = 100;
+
+        // page is > 0
+        $intPage = $this->_tryParseInt($page, 1);
+
+        $untilDate = null;
+        if (!is_null($until)) {
+            try {
+                $untilDate = Carbon::parse($until);
+            } catch (Exception $ex) {
+                $untilDate = null;
+            }
+        }
+
+        return $this->repository->getConvoMessages($convoId, $intLimit, $intPage, $untilDate);
+    }
+
+    private function _tryParseInt($val, $default)
+    {
+        $intValue = ctype_digit((string)$val) ? intval($val) : null;
+        if ($intValue === null) {
+            $intValue = $default;
+        }
+        return $intValue;
+    }
+
+    public function markAsRead()
+    {
+    }
+
+    public function deleteMessaage()
+    {
+    }
+
+    public function deleteConvo()
+    {
     }
 }

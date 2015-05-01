@@ -2,6 +2,7 @@
 
 use App\Repositories\ConvosRepository;
 use App\Services\ConvosService;
+use Carbon\Carbon;
 
 class ConvosServiceTest extends TestCase
 {
@@ -77,6 +78,49 @@ class ConvosServiceTest extends TestCase
 
         // check message in conversation
         $this->assertEquals(2, $convo->messages->count());
+
+        // check participants details
+        foreach ($convo->participants as $participant) {
+            if ($participant->id == $users->get(1)->id) {
+                $this->assertTrue($participant->is_read);
+            } else {
+                $this->assertFalse($participant->is_read);
+            }
+        }
+    }
+
+    public function testGetMessages()
+    {
+        $users = \App\Model\User::all();
+        // create convo
+        $convoService = new ConvosService(new ConvosRepository());
+        $convo = $this->_newConvo($users, $convoService);
+        // create 9 messages... one is already created by the nw convo call
+        for ($x = 0; $x <= 8; $x++) {
+            $convoService->addMessage($convo->id, [
+                'user_id' => $users->get($x % 2)->id,
+                'body' => $this->faker->paragraph()
+            ]);
+        }
+
+        $result = $convoService->getConvoMessages($convo->id);
+        $this->assertEquals(10, sizeof($result['messages']));
+        $this->assertEquals(10, $result['pagination']['count']);
+        $this->assertEquals(1, $result['pagination']['page']);
+        $this->assertEquals(25, $result['pagination']['limit']);
+
+
+        $result = $convoService->getConvoMessages($convo->id, $limit = 2);
+        $this->assertEquals(10, $result['pagination']['count']);
+        $this->assertEquals(2, sizeof($result['messages']));
+
+        $result = $convoService->getConvoMessages($convo->id, $limit = 3, $page = 2);
+        $this->assertEquals(10, $result['pagination']['count']);
+        $this->assertEquals(3, sizeof($result['messages']));
+
+        $result = $convoService->getConvoMessages($convo->id, $limit = 1, $page = 1, $until = Carbon::yesterday()->toIso8601String());
+        $this->assertEquals(0, $result['pagination']['count']);
+        $this->assertEquals(0, sizeof($result['messages']));
     }
 
 }

@@ -5,6 +5,7 @@ use App\Model\Convos\Conversation;
 use App\Model\Convos\Message;
 use App\Model\Convos\Participant;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class ConvosRepository implements ConvosRepositoryInterface
 {
@@ -51,6 +52,22 @@ class ConvosRepository implements ConvosRepositoryInterface
 
         $convo->messages()->save($message);
 
+        // update participants and set is_read to false and read_at to null
+        // for everyone except the user that created the message
+        $table = with(new Participant)->getTable();
+        DB::table($table)
+            ->where('conversation_id', $convo->id)
+            ->where('user_id', '<>', $userId)
+            ->whereNull('deleted_at')
+            ->update(['read_at' => null, 'is_read' => 0]);
+
+        // and for the current user I set is read and read at now
+        DB::table($table)
+            ->where('conversation_id', $convo->id)
+            ->where('user_id', $userId)
+            ->whereNull('deleted_at')
+            ->update(['read_at' => Carbon::now(), 'is_read' => 1]);
+
         return $message;
     }
 
@@ -59,4 +76,26 @@ class ConvosRepository implements ConvosRepositoryInterface
         return Conversation::find($convoId);
     }
 
+    public function getConvoMessages($convoId, $intLimit, $intPage, $untilDate)
+    {
+        $table = with(new Message)->getTable();
+        $base_query = DB::table($table)
+            ->where('conversation_id', $convoId)
+            ->whereNull('deleted_at');
+
+        if (!is_null($untilDate)) {
+            $base_query = $base_query->where('created_at', '<=', $untilDate);
+        }
+
+        $result = [
+            'pagination' => [
+                'page' => $intPage,
+                'limit' => $intLimit,
+                'count' => $base_query->count()
+            ],
+            'messages' => $base_query->skip(($intPage - 1) * $intLimit)->take($intLimit)->get()
+        ];
+
+        return $result;
+    }
 }

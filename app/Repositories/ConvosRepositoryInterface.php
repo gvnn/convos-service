@@ -11,4 +11,6 @@ interface ConvosRepositoryInterface
     public function addMessage(Conversation $convo, $userId, $body);
 
     public function getConvo($convoId);
+
+    public function getConvoMessages($convoId, $intLimit, $intPage, $untilDate);
 }
