@@ -26,7 +26,7 @@ class ConvosController extends Controller
 
     public function get(Request $request, $id)
     {
-        $convo = $this->service->getConverstation($id, Auth::user()->id);
+        $convo = $this->service->getConversation($id, Auth::user()->id);
         return response()->json($convo);
     }
 

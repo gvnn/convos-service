@@ -42,10 +42,10 @@ class ConvosServiceTest extends TestCase
         $convo = $this->_newConvo($users, $convoService);
 
         // this should be fine
-        $convoService->getConverstation($convo->id, $users->get(0)->id);
+        $convoService->getConversation($convo->id, $users->get(0)->id);
 
         // this returns 404
-        $convoService->getConverstation($convo->id, $this->faker->numberBetween($min = 1000, $max = 9000));
+        $convoService->getConversation($convo->id, $this->faker->numberBetween($min = 1000, $max = 9000));
     }
 
     private function _newConvo($users, $convoService)
@@ -88,7 +88,7 @@ class ConvosServiceTest extends TestCase
         $convoService = new ConvosService(new ConvosRepository());
         $convo = $this->_newConvo($users, $convoService);
         // add message
-        $message = $convoService->addConverstationMessage(
+        $message = $convoService->addConversationMessage(
             $convo->id,
             $users->get(1)->id,
             [
@@ -120,34 +120,34 @@ class ConvosServiceTest extends TestCase
         $convo = $this->_newConvo($users, $convoService);
         // create 9 messages... one is already created by the nw convo call
         for ($x = 0; $x <= 8; $x++) {
-            $convoService->addConverstationMessage($convo->id, $users->get($x % 2)->id, [
+            $convoService->addConversationMessage($convo->id, $users->get($x % 2)->id, [
                 'body' => $this->faker->paragraph()
             ]);
         }
 
-        $result = $convoService->getConverstationMessages($convo->id, $users->get(0)->id);
+        $result = $convoService->getConversationMessages($convo->id, $users->get(0)->id);
         $this->assertEquals(10, sizeof($result['messages']));
         $this->assertEquals(10, $result['pagination']['count']);
         $this->assertEquals(1, $result['pagination']['page']);
         $this->assertEquals(25, $result['pagination']['limit']);
 
 
-        $result = $convoService->getConverstationMessages($convo->id, $users->get(1)->id, $limit = 2);
+        $result = $convoService->getConversationMessages($convo->id, $users->get(1)->id, $limit = 2);
         $this->assertEquals(10, $result['pagination']['count']);
         $this->assertEquals(2, sizeof($result['messages']));
 
-        $result = $convoService->getConverstationMessages($convo->id, $users->get(0)->id, $limit = 3, $page = 2);
+        $result = $convoService->getConversationMessages($convo->id, $users->get(0)->id, $limit = 3, $page = 2);
         $this->assertEquals(10, $result['pagination']['count']);
         $this->assertEquals(3, sizeof($result['messages']));
 
-        $result = $convoService->getConverstationMessages(
+        $result = $convoService->getConversationMessages(
             $convo->id, $users->get(1)->id, $limit = 1, $page = 1, $until = Carbon::yesterday()->toIso8601String()
         );
         $this->assertEquals(0, $result['pagination']['count']);
         $this->assertEquals(0, sizeof($result['messages']));
 
         // no conversation... exception!
-        $result = $convoService->getConverstationMessages($convo->id, $this->faker->numberBetween($min = 1000, $max = 9000));
+        $result = $convoService->getConversationMessages($convo->id, $this->faker->numberBetween($min = 1000, $max = 9000));
     }
 
     public function testGetConversations()
@@ -171,7 +171,7 @@ class ConvosServiceTest extends TestCase
         sleep(1);
 
         // I add a message to the last convo and it should go on top of the list
-        $convoService->addConverstationMessage($convos[0]->id, $users->get(1)->id, [
+        $convoService->addConversationMessage($convos[0]->id, $users->get(1)->id, [
             'body' => $this->faker->paragraph()
         ]);
 
@@ -225,10 +225,10 @@ class ConvosServiceTest extends TestCase
         );
 
         // no more messages
-        $result = $convoService->getConverstationMessages($convo->id, $users->get(0)->id);
+        $result = $convoService->getConversationMessages($convo->id, $users->get(0)->id);
         $this->assertEquals(0, $result['pagination']['count']);
 
-        $result = $convoService->getConverstationMessages($convo->id, $users->get(1)->id);
+        $result = $convoService->getConversationMessages($convo->id, $users->get(1)->id);
         $this->assertEquals(0, $result['pagination']['count']);
     }
 

@@ -4,11 +4,11 @@ interface ConvosServiceInterface
 {
     public function createConversation($userId, array $data);
 
-    public function addConverstationMessage($convoId, $userId, array $data);
+    public function addConversationMessage($convoId, $userId, array $data);
 
-    public function getConverstation($convoId, $userId);
+    public function getConversation($convoId, $userId);
 
-    public function getConverstationMessages($convoId, $userId, $limit = 25, $page = 1, $until = null);
+    public function getConversationMessages($convoId, $userId, $limit = 25, $page = 1, $until = null);
 
     public function getConversations($userId, $limit = 25, $page = 1, $until = null);
 

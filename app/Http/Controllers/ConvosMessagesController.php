@@ -15,7 +15,7 @@ class ConvosMessagesController extends Controller
 
     public function find(Request $request, $convoId)
     {
-        $messages = $this->service->getConverstationMessages(
+        $messages = $this->service->getConversationMessages(
             $convoId,
             Auth::user()->id,
             $request->get('limit'),
@@ -33,7 +33,7 @@ class ConvosMessagesController extends Controller
 
     public function create(Request $request, $convoId)
     {
-        $message = $this->service->addConverstationMessage($convoId, Auth::user()->id, $request->all());
+        $message = $this->service->addConversationMessage($convoId, Auth::user()->id, $request->all());
         return response()->json($message);
     }
 

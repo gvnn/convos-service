@@ -52,6 +52,13 @@ class ConvosService implements ConvosServiceInterface
         return $convo;
     }
 
+    /**
+     * Validation helper
+     *
+     * @param $data
+     * @param array $rules
+     * @throws ConvosException
+     */
     private function _validate($data, array $rules)
     {
         $v = Validator::make($data, $rules);
@@ -60,7 +67,16 @@ class ConvosService implements ConvosServiceInterface
         }
     }
 
-    public function addConverstationMessage($convoId, $userId, array $data)
+    /**
+     * Adds a new message to a conversation
+     *
+     * @param $convoId
+     * @param $userId
+     * @param array $data
+     * @return mixed
+     * @throws ConvosException
+     */
+    public function addConversationMessage($convoId, $userId, array $data)
     {
         $data['conversation_id'] = $convoId;
         $data['user_id'] = $userId;
@@ -78,7 +94,16 @@ class ConvosService implements ConvosServiceInterface
         return $this->repository->addConverstationMessage($convo, $data['user_id'], $data['body']);
     }
 
-    public function getConverstation($convoId, $userId)
+
+    /**
+     * Returns a conversation details
+     *
+     * @param $convoId
+     * @param $userId
+     * @return mixed
+     * @throws ConvosException
+     */
+    public function getConversation($convoId, $userId)
     {
         $this->_validate(
             ['userId' => $userId, 'convoId' => $convoId],
@@ -91,7 +116,18 @@ class ConvosService implements ConvosServiceInterface
         return $this->repository->getConversation($convoId, $userId);
     }
 
-    public function getConverstationMessages($convoId, $userId, $limit = 25, $page = 1, $until = null)
+    /**
+     * List of messages in a conversation
+     *
+     * @param $convoId
+     * @param $userId
+     * @param int $limit
+     * @param int $page
+     * @param null $until
+     * @return mixed
+     * @throws ConvosException
+     */
+    public function getConversationMessages($convoId, $userId, $limit = 25, $page = 1, $until = null)
     {
         $this->_validate(
             ['userId' => $userId, 'convoId' => $convoId],
@@ -109,6 +145,14 @@ class ConvosService implements ConvosServiceInterface
         return $this->repository->getConversationMessages($convoId, $userId, $pagination);
     }
 
+    /**
+     * Helper to parse pagination parameters
+     *
+     * @param int $limit
+     * @param int $page
+     * @param null $until
+     * @return array
+     */
     private function _parsePaginationParams($limit = 25, $page = 1, $until = null)
     {
         // limit is default 25 / max 100
@@ -134,6 +178,13 @@ class ConvosService implements ConvosServiceInterface
         ];
     }
 
+    /**
+     * Tries to parse and int and return the default on failure
+     *
+     * @param $val
+     * @param $default
+     * @return int|null
+     */
     private function _tryParseInt($val, $default)
     {
         $intValue = ctype_digit((string)$val) ? intval($val) : null;
@@ -143,6 +194,16 @@ class ConvosService implements ConvosServiceInterface
         return $intValue;
     }
 
+    /**
+     * Returns a list of conversations
+     *
+     * @param $userId
+     * @param int $limit
+     * @param int $page
+     * @param null $until
+     * @return mixed
+     * @throws ConvosException
+     */
     public function getConversations($userId, $limit = 25, $page = 1, $until = null)
     {
         $this->_validate(
@@ -193,9 +254,18 @@ class ConvosService implements ConvosServiceInterface
         return $this->repository->deleteConversation($convoId, $userId);
     }
 
+    /**
+     * Updates a conversation status.
+     * At the moment this method only marks the conversation as read
+     *
+     * @param $convoId
+     * @param $userId
+     * @param array $data
+     * @return mixed
+     * @throws ConvosException
+     */
     public function updateConversation($convoId, $userId, array $data)
     {
-        // At the moment this method only marks the conversation as read
         $this->_validate(
             $data,
             [
