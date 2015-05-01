@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "42797c58f87526b0f34d3ce19913672b",
+    "hash": "beffcc47fcab80a1ac7510f755b4c3dc",
     "packages": [
         {
             "name": "classpreloader/classpreloader",
@@ -834,12 +834,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/lucadegasperi/oauth2-server-laravel.git",
-                "reference": "996c0498c746289e4738dd4f2a33b3ab3db62350"
+                "reference": "bec88851fd2b429c79a05273509954e1b271ba71"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lucadegasperi/oauth2-server-laravel/zipball/996c0498c746289e4738dd4f2a33b3ab3db62350",
-                "reference": "996c0498c746289e4738dd4f2a33b3ab3db62350",
+                "url": "https://api.github.com/repos/lucadegasperi/oauth2-server-laravel/zipball/bec88851fd2b429c79a05273509954e1b271ba71",
+                "reference": "bec88851fd2b429c79a05273509954e1b271ba71",
                 "shasum": ""
             },
             "require": {
@@ -885,7 +885,7 @@
                     "email": "packages@lucadegasperi.com"
                 }
             ],
-            "description": "A Laravel 4 wrapper for the popular OAuth 2.0 Server package league/oauth2-server",
+            "description": "Laravel wrapper for the OAuth 2.0 Server package league/oauth2-server.",
             "keywords": [
                 "api",
                 "laravel",
@@ -893,7 +893,7 @@
                 "oauth2",
                 "server"
             ],
-            "time": "2015-04-22 13:11:38"
+            "time": "2015-04-30 08:32:57"
         },
         {
             "name": "mockery/mockery",
