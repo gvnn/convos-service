@@ -128,4 +128,35 @@ class ConvosServiceTest extends TestCase
         $this->assertEquals(0, sizeof($result['messages']));
     }
 
+    public function testGetConversations()
+    {
+        $users = \App\Model\User::all();
+        $convoService = new ConvosService(new ConvosRepository());
+        // create 10 convos
+        $convos = [];
+        for ($x = 0; $x <= 9; $x++) {
+            $convos[] = $this->_newConvo($users, $convoService);
+        }
+        // get the list for user 1
+        $result = $convoService->getConversations($users->get(0)->id);
+        $this->assertEquals(10, $result['pagination']['count']);
+
+        // get the list for user 2
+        $result = $convoService->getConversations($users->get(0)->id);
+        $this->assertEquals(10, $result['pagination']['count']);
+
+        // sleep 1 sec
+        sleep(1);
+
+        // I add a message to the last convo and it should go on top of the list
+        $convoService->addMessage($convos[0]->id, [
+            'user_id' => $users->get(1)->id,
+            'body' => $this->faker->paragraph()
+        ]);
+
+        $result = $convoService->getConversations($users->get(0)->id, $limit = 1);
+        $this->assertEquals($convos[0]->id, $result['conversations'][0]->id);
+        $result = $convoService->getConversations($users->get(1)->id, $limit = 1);
+        $this->assertEquals($convos[0]->id, $result['conversations'][0]->id);
+    }
 }

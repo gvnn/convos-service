@@ -12,5 +12,7 @@ interface ConvosRepositoryInterface
 
     public function getConvo($convoId);
 
-    public function getConvoMessages($convoId, $userId, $intLimit, $intPage, $untilDate);
+    public function getConvoMessages($convoId, $userId, array $pagination);
+
+    public function getConversations($userId, array $pagination);
 }

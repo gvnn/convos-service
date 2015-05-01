@@ -75,6 +75,13 @@ class ConvosService implements ConvosServiceInterface
 
     public function getConvoMessages($convoId, $userId, $limit = 25, $page = 1, $until = null)
     {
+        $pagination = $this->_parsePaginationParams($limit, $page, $until);
+        return $this->repository->getConvoMessages($convoId, $userId, $pagination);
+    }
+
+    private function _parsePaginationParams($limit = 25, $page = 1, $until = null)
+    {
+
         // limit is default 25 / max 100
         $intLimit = $this->_tryParseInt($limit, 25);
         if ($intLimit > 100) $intLimit = 100;
@@ -91,7 +98,11 @@ class ConvosService implements ConvosServiceInterface
             }
         }
 
-        return $this->repository->getConvoMessages($convoId, $userId, $intLimit, $intPage, $untilDate);
+        return [
+            'limit' => $intLimit,
+            'page' => $intPage,
+            'until' => $untilDate
+        ];
     }
 
     private function _tryParseInt($val, $default)
@@ -103,19 +114,21 @@ class ConvosService implements ConvosServiceInterface
         return $intValue;
     }
 
-    public function getConversations()
+    public function getConversations($userId, $limit = 25, $page = 1, $until = null)
+    {
+        $pagination = $this->_parsePaginationParams($limit, $page, $until);
+        return $this->repository->getConversations($userId, $pagination);
+    }
+
+    public function markAsRead($convoId, $userId)
     {
     }
 
-    public function markAsRead()
+    public function deleteMessage($convoId, $userId, $messageId)
     {
     }
 
-    public function deleteMessage()
-    {
-    }
-
-    public function deleteConvo()
+    public function deleteConvo($convoId, $userId)
     {
     }
 }

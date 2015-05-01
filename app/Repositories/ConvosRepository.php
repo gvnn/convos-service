@@ -54,19 +54,19 @@ class ConvosRepository implements ConvosRepositoryInterface
 
         // update participants and set is_read to false and read_at to null
         // for everyone except the user that created the message
+        // also if a participant deleted the conversation it comes back in list
         $table = with(new Participant)->getTable();
         DB::table($table)
             ->where('conversation_id', $convo->id)
             ->where('user_id', '<>', $userId)
-            ->whereNull('deleted_at')
-            ->update(['read_at' => null, 'is_read' => 0]);
+            ->update(['read_at' => null, 'is_read' => 0, 'deleted_at' => null, 'updated_at' => Carbon::now()]);
 
         // and for the current user I set is read and read at now
         DB::table($table)
             ->where('conversation_id', $convo->id)
             ->where('user_id', $userId)
             ->whereNull('deleted_at')
-            ->update(['read_at' => Carbon::now(), 'is_read' => 1]);
+            ->update(['read_at' => Carbon::now(), 'is_read' => 1, 'updated_at' => Carbon::now()]);
 
         return $message;
     }
@@ -76,7 +76,7 @@ class ConvosRepository implements ConvosRepositoryInterface
         return Conversation::find($convoId);
     }
 
-    public function getConvoMessages($convoId, $userId, $intLimit, $intPage, $untilDate)
+    public function getConvoMessages($convoId, $userId, array $pagination)
     {
         $messagesTable = with(new Message)->getTable();
         $participantsTable = with(new Participant)->getTable();
@@ -87,17 +87,53 @@ class ConvosRepository implements ConvosRepositoryInterface
             ->whereNull($messagesTable . '.deleted_at')
             ->whereNull($participantsTable . '.deleted_at');
 
-        if (!is_null($untilDate)) {
-            $base_query = $base_query->where($messagesTable . '.created_at', '<=', $untilDate);
+        if (!is_null($pagination['until'])) {
+            $base_query = $base_query->where($messagesTable . '.created_at', '<=', $pagination['until']);
         }
 
         $result = [
             'pagination' => [
-                'page' => $intPage,
-                'limit' => $intLimit,
+                'page' => $pagination['page'],
+                'limit' => $pagination['limit'],
                 'count' => $base_query->count()
             ],
-            'messages' => $base_query->skip(($intPage - 1) * $intLimit)->take($intLimit)->get()
+            'messages' => $base_query
+                ->orderBy('id', 'asc')
+                ->skip(($pagination['page'] - 1) * $pagination['limit'])
+                ->take($pagination['limit'])->get()
+        ];
+
+        return $result;
+    }
+
+    public function getConversations($userId, array $pagination)
+    {
+        $convosTable = with(new Conversation)->getTable();
+        $participantsTable = with(new Participant)->getTable();
+
+        $base_query = DB::table($convosTable)
+            ->join($participantsTable, $participantsTable . '.conversation_id', '=', $convosTable . '.id')
+            ->where($participantsTable . '.user_id', $userId)
+            ->whereNull($convosTable . '.deleted_at')
+            ->whereNull($participantsTable . '.deleted_at')
+            ->select($convosTable . '.id', $participantsTable . '.updated_at');
+
+        if (!is_null($pagination['until'])) {
+            $base_query = $base_query->where($convosTable . '.created_at', '<=', $pagination['until']);
+        }
+
+        $result = [
+            'pagination' => [
+                'page' => $pagination['page'],
+                'limit' => $pagination['limit'],
+                'count' => $base_query->count()
+            ],
+            'conversations' => $base_query
+                ->orderBy($participantsTable . '.updated_at', 'desc')
+                ->orderBy($convosTable . '.updated_at', 'desc')
+                ->orderBy($convosTable . '.id', 'desc')
+                ->skip(($pagination['page'] - 1) * $pagination['limit'])
+                ->take($pagination['limit'])->get()
         ];
 
         return $result;

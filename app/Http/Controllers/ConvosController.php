@@ -13,6 +13,22 @@ class ConvosController extends Controller
         $this->service = $service;
     }
 
+    public function  find(Request $request)
+    {
+    }
+
+    public function  get(Request $request)
+    {
+    }
+
+    public function  update(Request $request)
+    {
+    }
+
+    public function  delete(Request $request)
+    {
+    }
+
     public function create(Request $request)
     {
         $convo = $this->service->create(Auth::user(), Request::all());
