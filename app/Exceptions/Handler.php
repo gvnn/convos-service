@@ -4,6 +4,7 @@ use App\Model\ConvosException;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
 class Handler extends ExceptionHandler
 {
@@ -41,20 +42,20 @@ class Handler extends ExceptionHandler
     {
         $status = 500;
         $message = [
-            'error' => ' 500 Internal Server Error',
-            'error_description' => 'The server encountered an unexpected condition which prevented it from fulfilling the request.'
+            'error_description' => 'Internal Server Error'
         ];
 
-        if ($e instanceof ModelNotFoundException) {
+        if ($e instanceof HttpExceptionInterface) {
+            $status = $e->getStatusCode();
+            $message = [];
+        } elseif ($e instanceof ModelNotFoundException) {
             $status = 404;
             $message = [
-                'error' => '404 Not Found',
-                'error_description' => 'The server has not found anything matching the Request-URI'
+                'error_description' => 'Item not found'
             ];
         } elseif ($e instanceof ConvosException) {
             $status = 400;
             $message = [
-                'error' => '400 Bad Request',
                 'error_description' => $e->getValidationError()
             ];
         }

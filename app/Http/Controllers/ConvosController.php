@@ -15,13 +15,13 @@ class ConvosController extends Controller
 
     public function find(Request $request)
     {
-        $convo = $this->service->getConversations(
+        $convos = $this->service->getConversations(
             Auth::user()->id,
             $request->get('limit'),
             $request->get('page'),
             $request->get('until')
         );
-        return $convo->toJson();
+        return $convos;
     }
 
     public function get(Request $request, $id)

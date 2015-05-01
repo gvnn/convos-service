@@ -4,7 +4,7 @@ interface ConvosServiceInterface
 {
     public function createConversation($userId, array $data);
 
-    public function addConverstationMessage($convoId, array $data);
+    public function addConverstationMessage($convoId, $userId, array $data);
 
     public function getConverstation($convoId, $userId);
 

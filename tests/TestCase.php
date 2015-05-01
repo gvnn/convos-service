@@ -40,6 +40,28 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase
         Mail::pretend(true);
     }
 
+    protected function getHeaders($username, $password)
+    {
+        $token = $this->getUserToken($username, $password);
+        return [
+            'HTTP_AUTHORIZATION' => 'Bearer ' . $token->access_token,
+            'HTTP_CONTENT_TYPE' => 'application/json',
+            'HTTP_ACCEPT' => 'application/json'
+        ];
+    }
+
+    protected function getUserToken($username, $password)
+    {
+        $response = $this->call('POST', '/oauth/access_token', [
+            'grant_type' => 'password',
+            'username' => $username,
+            'password' => $password,
+            'client_id' => 'client1id',
+            'client_secret' => 'client1secret'
+        ]);
+        return $this->parseJson($response);
+    }
+
     protected function parseJson($response)
     {
         $jsonResponse = $response->getContent();

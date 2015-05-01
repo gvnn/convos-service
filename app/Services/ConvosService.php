@@ -57,9 +57,10 @@ class ConvosService implements ConvosServiceInterface
         }
     }
 
-    public function addConverstationMessage($convoId, array $data)
+    public function addConverstationMessage($convoId, $userId, array $data)
     {
         $data['conversation_id'] = $convoId;
+        $data['user_id'] = $userId;
 
         $this->_validate($data, [
             'conversation_id' => 'required|integer|min:1',
@@ -98,6 +99,10 @@ class ConvosService implements ConvosServiceInterface
         );
 
         $pagination = $this->_parsePaginationParams($limit, $page, $until);
+
+        // get the convo... this will check the existence of the conversation
+        $convo = $this->repository->getConversation($convoId, $userId);
+
         return $this->repository->getConversationMessages($convoId, $userId, $pagination);
     }
 

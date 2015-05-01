@@ -90,8 +90,8 @@ class ConvosServiceTest extends TestCase
         // add message
         $message = $convoService->addConverstationMessage(
             $convo->id,
+            $users->get(1)->id,
             [
-                'user_id' => $users->get(1)->id,
                 'body' => $this->faker->paragraph()
             ]
         );
@@ -109,6 +109,9 @@ class ConvosServiceTest extends TestCase
         }
     }
 
+    /**
+     * @expectedException \Illuminate\Database\Eloquent\ModelNotFoundException
+     */
     public function testGetMessages()
     {
         $users = \App\Model\User::all();
@@ -117,8 +120,7 @@ class ConvosServiceTest extends TestCase
         $convo = $this->_newConvo($users, $convoService);
         // create 9 messages... one is already created by the nw convo call
         for ($x = 0; $x <= 8; $x++) {
-            $convoService->addConverstationMessage($convo->id, [
-                'user_id' => $users->get($x % 2)->id,
+            $convoService->addConverstationMessage($convo->id, $users->get($x % 2)->id, [
                 'body' => $this->faker->paragraph()
             ]);
         }
@@ -144,8 +146,8 @@ class ConvosServiceTest extends TestCase
         $this->assertEquals(0, $result['pagination']['count']);
         $this->assertEquals(0, sizeof($result['messages']));
 
+        // no conversation... exception!
         $result = $convoService->getConverstationMessages($convo->id, $this->faker->numberBetween($min = 1000, $max = 9000));
-        $this->assertEquals(0, sizeof($result['messages']));
     }
 
     public function testGetConversations()
@@ -169,8 +171,7 @@ class ConvosServiceTest extends TestCase
         sleep(1);
 
         // I add a message to the last convo and it should go on top of the list
-        $convoService->addConverstationMessage($convos[0]->id, [
-            'user_id' => $users->get(1)->id,
+        $convoService->addConverstationMessage($convos[0]->id, $users->get(1)->id, [
             'body' => $this->faker->paragraph()
         ]);
 

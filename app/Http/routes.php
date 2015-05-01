@@ -46,10 +46,22 @@ Route::group(['prefix' => '/api/v1'], function () {
     ])->where('id', '[0-9]+');
 
     // create a new message
+    Route::post('convos/{convoId}/messages', [
+        'before' => 'oauth',
+        'uses' => 'ConvosMessagesController@create'
+    ])->where('convoId', '[0-9]+');
 
     // get conversation messages
+    Route::get('convos/{convoId}/messages', [
+        'before' => 'oauth',
+        'uses' => 'ConvosMessagesController@find'
+    ])->where('convoId', '[0-9]+');
 
     // delete message
+    Route::delete('convos/{convoId}/messages/{id}', [
+        'before' => 'oauth',
+        'uses' => 'ConvosMessagesController@delete'
+    ])->where(['convoId' => '[0-9]+', 'id' => '[0-9]+']);
 
 });
 
