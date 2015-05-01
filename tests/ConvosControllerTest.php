@@ -50,15 +50,23 @@ class ConvosControllerTest extends TestCase
 
     public function testBadRequest()
     {
-        $response = $this->call('POST', '/api/v1/convos', [], [], [],
-            $this->_getHeaders('foo@domain.com', 'test')
-        );
+        $headers = $this->_getHeaders('foo@domain.com', 'test');
+
+        $response = $this->call('POST', '/api/v1/convos', [], [], [], $headers);
         $this->assertEquals(400, $response->getStatusCode());
 
         $json = $this->parseJson($response);
 
         // check one of the errors
-        $this->assertEquals($json->error_description->subject[0], 'The subject field is required.');
+        $this->assertObjectHasAttribute('subject', $json->error_description);
+        $this->assertObjectHasAttribute('recipient', $json->error_description);
+        $this->assertObjectHasAttribute('body', $json->error_description);
+
+        $response = $this->call('PUT', '/api/v1/convos/1', [], [], [], $headers);
+        $this->assertEquals(400, $response->getStatusCode());
+        $json = $this->parseJson($response);
+        $this->assertObjectHasAttribute('is_read', $json->error_description);
+
     }
 
 }
