@@ -21,30 +21,30 @@ class ConvosController extends Controller
             $request->get('page'),
             $request->get('until')
         );
-        return $convos;
+        return response()->json($convos);
     }
 
     public function get(Request $request, $id)
     {
         $convo = $this->service->getConverstation($id, Auth::user()->id);
-        return $convo->toJson();
+        return response()->json($convo);
     }
 
     public function update(Request $request, $id)
     {
         $convo = $this->service->updateConversation($id, Auth::user()->id, $request->all());
-        return $convo->toJson();
+        return response()->json($convo);
     }
 
     public function delete(Request $request, $id)
     {
         $convo = $this->service->deleteConversation($id, Auth::user()->id);
-        return $convo->toJson();
+        return response()->json($convo);
     }
 
     public function create(Request $request)
     {
         $convo = $this->service->createConversation(Auth::user()->id, $request->all());
-        return $convo->toJson();
+        return response()->json($convo);
     }
 }

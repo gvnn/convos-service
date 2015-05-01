@@ -13,6 +13,8 @@ class Message extends Model
 
     protected $fillable = ['user_id', 'body'];
 
+    protected $hidden = array('deleted_at');
+
     public function conversation()
     {
         return $this->belongsTo('App\Model\Convos\Conversation');

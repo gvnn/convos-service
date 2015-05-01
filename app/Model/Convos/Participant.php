@@ -9,9 +9,11 @@ class Participant extends Model
 
     use SoftDeletes;
 
-    protected $fillable = ['is_creator', 'is_read', 'read_at'];
+    protected $fillable = ['user_id', 'is_creator', 'is_read', 'read_at'];
 
     protected $dates = ['deleted_at', 'read_at'];
+
+    protected $hidden = array('deleted_at');
 
     protected $casts = [
         'is_creator' => 'boolean',

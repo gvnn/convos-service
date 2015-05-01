@@ -73,7 +73,9 @@ class ConvosRepository implements ConvosRepositoryInterface
 
     public function getConversation($convoId, $userId)
     {
-        return Participant::where('conversation_id', $convoId)->where('user_id', $userId)->firstOrFail()->conversation;
+        $conversation = Participant::where('conversation_id', $convoId)->where('user_id', $userId)->firstOrFail()->conversation;
+        $conversation->participants;
+        return $conversation;
     }
 
     public function getConversationMessages($convoId, $userId, array $pagination)
@@ -85,7 +87,13 @@ class ConvosRepository implements ConvosRepositoryInterface
             ->where($messagesTable . '.conversation_id', $convoId)
             ->where($participantsTable . '.user_id', $userId)
             ->whereNull($messagesTable . '.deleted_at')
-            ->whereNull($participantsTable . '.deleted_at');
+            ->whereNull($participantsTable . '.deleted_at')
+            ->select(
+                $messagesTable . '.id',
+                $messagesTable . '.body',
+                $messagesTable . '.updated_at',
+                $messagesTable . '.user_id'
+            );
 
         if (!is_null($pagination['until'])) {
             $base_query = $base_query->where($messagesTable . '.created_at', '<=', $pagination['until']);
@@ -98,7 +106,7 @@ class ConvosRepository implements ConvosRepositoryInterface
                 'count' => $base_query->count()
             ],
             'messages' => $base_query
-                ->orderBy('id', 'asc')
+                ->orderBy($messagesTable . '.id', 'asc')
                 ->skip(($pagination['page'] - 1) * $pagination['limit'])
                 ->take($pagination['limit'])->get()
         ];
@@ -163,7 +171,9 @@ class ConvosRepository implements ConvosRepositoryInterface
     {
         // find message, only the creator can delete that
         $message = Message::where('conversation_id', $convoId)
-            ->where('user_id', $userId)->firstOrFail();
+            ->where('user_id', $userId)
+            ->where('id', $messageId)
+            ->firstOrFail();
 
         $message->delete();
 

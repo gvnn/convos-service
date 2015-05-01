@@ -97,10 +97,10 @@ class ConvosServiceTest extends TestCase
         );
 
         // check message in conversation
-        $this->assertEquals(2, $convo->messages->count());
+        $this->assertEquals(2, $convo->fresh()->messages->count());
 
         // check participants details
-        foreach ($convo->participants as $participant) {
+        foreach ($convo->fresh()->participants as $participant) {
             if ($participant->id == $users->get(1)->id) {
                 $this->assertTrue($participant->is_read);
             } else {

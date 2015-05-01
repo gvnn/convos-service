@@ -46,6 +46,9 @@ class ConvosService implements ConvosServiceInterface
         // Add message
         $this->repository->addConverstationMessage($convo, $data['user_id'], $data['body']);
 
+        $convo->messages;
+        $convo->participants;
+
         return $convo;
     }
 

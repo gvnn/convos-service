@@ -22,19 +22,19 @@ class ConvosMessagesController extends Controller
             $request->get('page'),
             $request->get('until')
         );
-        return  $messages;
+        return response()->json($messages);
     }
 
     public function delete($convoId, $id)
     {
         $message = $this->service->deleteConversationMessage($convoId, Auth::user()->id, $id);
-        return $message->toJson();
+        return response()->json($message);
     }
 
     public function create(Request $request, $convoId)
     {
         $message = $this->service->addConverstationMessage($convoId, Auth::user()->id, $request->all());
-        return $message->toJson();
+        return response()->json($message);
     }
 
 }

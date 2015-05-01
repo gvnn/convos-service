@@ -11,6 +11,8 @@ class Conversation extends Model
 
     protected $dates = ['deleted_at'];
 
+    protected $hidden = array('deleted_at');
+
     protected $fillable = ['subject', 'created_by'];
 
     public function messages()
