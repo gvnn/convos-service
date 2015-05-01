@@ -6,9 +6,9 @@ interface ConvosRepositoryInterface
 {
     public function createConversation($userId, $subject);
 
-    public function addConverstationParticipants(Conversation $convo, $creator, array $participants);
+    public function addConversationParticipants(Conversation $convo, $creator, array $participants);
 
-    public function addConverstationMessage(Conversation $convo, $userId, $body);
+    public function addConversationMessage(Conversation $convo, $userId, $body);
 
     public function getConversation($convoId, $userId);
 

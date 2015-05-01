@@ -22,7 +22,7 @@ class ConvosRepository implements ConvosRepositoryInterface
         return $convo;
     }
 
-    public function addConverstationParticipants(Conversation $convo, $creator, array $participants)
+    public function addConversationParticipants(Conversation $convo, $creator, array $participants)
     {
         $participantsArray = [
             new Participant(['user_id' => $creator, 'is_creator' => true, 'is_read' => true, 'read_at' => Carbon::now()])
@@ -43,7 +43,7 @@ class ConvosRepository implements ConvosRepositoryInterface
         return $convo;
     }
 
-    public function addConverstationMessage(Conversation $convo, $userId, $body)
+    public function addConversationMessage(Conversation $convo, $userId, $body)
     {
         $message = new Message([
             'user_id' => $userId,

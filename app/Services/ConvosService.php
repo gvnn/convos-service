@@ -41,10 +41,10 @@ class ConvosService implements ConvosServiceInterface
         $convo = $this->repository->createConversation($data['user_id'], $data['subject']);
 
         // Add participants
-        $this->repository->addConverstationParticipants($convo, $data['user_id'], array($data['recipient']));
+        $this->repository->addConversationParticipants($convo, $data['user_id'], array($data['recipient']));
 
         // Add message
-        $this->repository->addConverstationMessage($convo, $data['user_id'], $data['body']);
+        $this->repository->addConversationMessage($convo, $data['user_id'], $data['body']);
 
         $convo->messages;
         $convo->participants;
@@ -91,7 +91,7 @@ class ConvosService implements ConvosServiceInterface
         $convo = $this->repository->getConversation($convoId, $data['user_id']);
 
         // add message an return message details
-        return $this->repository->addConverstationMessage($convo, $data['user_id'], $data['body']);
+        return $this->repository->addConversationMessage($convo, $data['user_id'], $data['body']);
     }
 
 
