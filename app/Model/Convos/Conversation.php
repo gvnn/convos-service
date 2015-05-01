@@ -1,4 +1,4 @@
-<?php namespace App\Models\Convos;
+<?php namespace App\Model\Convos;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -15,7 +15,7 @@ class Conversation extends Model
 
     public function messages()
     {
-        return $this->hasMany('App\Models\Convos\Message');
+        return $this->hasMany('App\Model\Convos\Message');
     }
 
     public function participants()

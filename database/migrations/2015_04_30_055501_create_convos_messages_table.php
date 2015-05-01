@@ -19,12 +19,16 @@ class CreateConvosMessagesTable extends Migration
             $table->integer('conversation_id')->unsigned();
 
             $table->text('body');
+            $table->integer('user_id')->unsigned();
 
             $table->timestamps();
             $table->softDeletes();
 
             $table->foreign('conversation_id')
                 ->references('id')->on('convos_conversations');
+
+            $table->foreign('user_id')
+                ->references('id')->on('users');
         });
 
     }

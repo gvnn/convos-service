@@ -37,4 +37,9 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         return $this->hasManyThrough('App\Models\Convos\Conversation', 'App\Models\Convos\Participant');
     }
 
+    public function getId()
+    {
+        return $this->id;
+    }
+
 }

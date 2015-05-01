@@ -82,7 +82,7 @@ return [
                     'email'    => $username,
                     'password' => $password,
                 ])){
-                    $user = \App\Models\User::where('email',$username)->first();
+                    $user = \App\Model\User::where('email',$username)->first();
                     return $user->id;
                 } else {
                     return false;

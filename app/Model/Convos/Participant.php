@@ -1,4 +1,4 @@
-<?php namespace App\Models\Convos;
+<?php namespace App\Model\Convos;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -9,7 +9,7 @@ class Participant extends Model
 
     use SoftDeletes;
 
-    protected $fillable = ['user_id', 'is_creator', 'is_read', 'read_at'];
+    protected $fillable = ['is_creator', 'is_read', 'read_at'];
 
     protected $dates = ['deleted_at', 'read_at'];
 
@@ -20,11 +20,11 @@ class Participant extends Model
 
     public function conversation()
     {
-        return $this->belongsTo('App\Models\Convos\Conversation');
+        return $this->belongsTo('App\Model\Convos\Conversation');
     }
 
     public function user()
     {
-        return $this->belongsTo('App\Models\User');
+        return $this->belongsTo('App\Model\User');
     }
 }

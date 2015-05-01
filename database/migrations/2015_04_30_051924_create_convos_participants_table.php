@@ -19,7 +19,7 @@ class CreateConvosParticipantsTable extends Migration {
             $table->boolean('is_creator');
             $table->boolean('is_read');
 
-            $table->timestamp('read_at');
+            $table->dateTimeTz('read_at')->nullable();
 
             $table->integer('user_id')->unsigned();
             $table->integer('conversation_id')->unsigned();

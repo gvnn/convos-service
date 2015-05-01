@@ -1,4 +1,4 @@
-<?php namespace App\Models\Convos;
+<?php namespace App\Model\Convos;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -11,13 +11,15 @@ class Message extends Model
 
     protected $dates = ['deleted_at'];
 
+    protected $fillable = ['user_id', 'body'];
+
     public function conversation()
     {
-        return $this->belongsTo('App\Models\Convos\Conversation');
+        return $this->belongsTo('App\Model\Convos\Conversation');
     }
 
     public function user()
     {
-        return $this->belongsTo('App\Model\User', 'created_by');
+        return $this->belongsTo('App\Model\User', 'user_id');
     }
 }
