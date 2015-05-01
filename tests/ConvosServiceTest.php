@@ -31,6 +31,38 @@ class ConvosServiceTest extends TestCase
         $convoService->createConversation(1, []);
     }
 
+    /**
+     * @expectedException \Illuminate\Database\Eloquent\ModelNotFoundException
+     */
+    public function testGetConversation()
+    {
+        $users = \App\Model\User::all();
+        // create convo
+        $convoService = new ConvosService(new ConvosRepository());
+        $convo = $this->_newConvo($users, $convoService);
+
+        // this should be fine
+        $convoService->getConverstation($convo->id, $users->get(0)->id);
+
+        // this returns 404
+        $convoService->getConverstation($convo->id, $this->faker->numberBetween($min = 1000, $max = 9000));
+    }
+
+    private function _newConvo($users, $convoService)
+    {
+        $subject = $this->faker->text(140);
+        $recipient = $users->get(1)->id;
+        $body = $this->faker->paragraph();
+
+        $convo = $convoService->createConversation($users->get(0)->id, [
+            'subject' => $subject,
+            'recipient' => $recipient,
+            'body' => $body
+        ]);
+
+        return $convo;
+    }
+
     public function testCreate()
     {
         $users = \App\Model\User::all();
@@ -49,21 +81,6 @@ class ConvosServiceTest extends TestCase
         $this->assertFalse($convo->participants->get(1)->is_creator);
     }
 
-    private function _newConvo($users, $convoService)
-    {
-        $subject = $this->faker->text(140);
-        $recipient = $users->get(1)->id;
-        $body = $this->faker->paragraph();
-
-        $convo = $convoService->createConversation($users->get(0)->id, [
-            'subject' => $subject,
-            'recipient' => $recipient,
-            'body' => $body
-        ]);
-
-        return $convo;
-    }
-
     public function testAddMessage()
     {
         $users = \App\Model\User::all();
@@ -71,10 +88,13 @@ class ConvosServiceTest extends TestCase
         $convoService = new ConvosService(new ConvosRepository());
         $convo = $this->_newConvo($users, $convoService);
         // add message
-        $message = $convoService->addConverstationMessage($convo->id, [
-            'user_id' => $users->get(1)->id,
-            'body' => $this->faker->paragraph()
-        ]);
+        $message = $convoService->addConverstationMessage(
+            $convo->id,
+            [
+                'user_id' => $users->get(1)->id,
+                'body' => $this->faker->paragraph()
+            ]
+        );
 
         // check message in conversation
         $this->assertEquals(2, $convo->messages->count());

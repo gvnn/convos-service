@@ -6,7 +6,7 @@ interface ConvosServiceInterface
 
     public function addConverstationMessage($convoId, array $data);
 
-    public function getConverstation($convoId);
+    public function getConverstation($convoId, $userId);
 
     public function getConverstationMessages($convoId, $userId, $limit = 25, $page = 1, $until = null);
 

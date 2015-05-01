@@ -68,21 +68,23 @@ class ConvosService implements ConvosServiceInterface
         ]);
 
         // get convo
-        $convo = $this->repository->getConversation($convoId);
+        $convo = $this->repository->getConversation($convoId, $data['user_id']);
 
         // add message an return message details
         return $this->repository->addConverstationMessage($convo, $data['user_id'], $data['body']);
     }
 
-    public function getConverstation($convoId)
+    public function getConverstation($convoId, $userId)
     {
-        $this->_validate([
-            'convoId' => $convoId
-        ], [
-            'convoId' => 'required|integer|min:1'
-        ]);
+        $this->_validate(
+            ['userId' => $userId, 'convoId' => $convoId],
+            [
+                'convoId' => 'required|integer|min:1',
+                'userId' => 'required|integer|min:1'
+            ]
+        );
 
-        return $this->repository->getConversation($convoId);
+        return $this->repository->getConversation($convoId, $userId);
     }
 
     public function getConverstationMessages($convoId, $userId, $limit = 25, $page = 1, $until = null)

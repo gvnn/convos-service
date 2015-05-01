@@ -17,8 +17,13 @@ class ConvosController extends Controller
     {
     }
 
-    public function  get(Request $request)
+    public function get(Request $request, $id)
     {
+        $convo = $this->service->getConverstation(
+            $id,
+            Auth::user()->id
+        );
+        return $convo->toJson();
     }
 
     public function  update(Request $request)

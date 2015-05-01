@@ -10,7 +10,7 @@ interface ConvosRepositoryInterface
 
     public function addConverstationMessage(Conversation $convo, $userId, $body);
 
-    public function getConversation($convoId);
+    public function getConversation($convoId, $userId);
 
     public function getConversationMessages($convoId, $userId, array $pagination);
 

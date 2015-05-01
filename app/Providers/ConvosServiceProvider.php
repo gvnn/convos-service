@@ -22,13 +22,14 @@ class ConvosServiceProvider
         });
 
         App::bind('App\Repositories\ConvosRepositoryInterface', 'App\Repositories\ConvosRepository');
-        App::bind('App\Repositories\ConvosServiceInterface', 'App\Repositories\ConvosService');
+        App::bind('App\Services\ConvosServiceInterface', 'App\Services\ConvosService');
     }
 
     public function provides()
     {
         return [
-            "Repositories\\ConvosRepositoryInterface"
+            "Repositories\\ConvosRepositoryInterface",
+            "Services\\ConvosServiceInterface"
         ];
     }
 }

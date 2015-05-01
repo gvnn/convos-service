@@ -71,9 +71,9 @@ class ConvosRepository implements ConvosRepositoryInterface
         return $message;
     }
 
-    public function getConversation($convoId)
+    public function getConversation($convoId, $userId)
     {
-        return Conversation::findOrFail($convoId);
+        return Participant::where('conversation_id', $convoId)->where('user_id', $userId)->firstOrFail()->conversation;
     }
 
     public function getConversationMessages($convoId, $userId, array $pagination)

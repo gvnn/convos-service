@@ -54,7 +54,7 @@ class Handler extends ExceptionHandler
                     'error_description' => 'The server has not found anything matching the Request-URI'
                 ];
             } elseif ($e instanceof ConvosException) {
-                $status = 404;
+                $status = 400;
                 $message = [
                     'error' => '400 Bad Request',
                     'error_description' => $e->getValidationError()
