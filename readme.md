@@ -20,6 +20,7 @@ The application requirements are:
 - Composer
 - MySql
 - SQLite (in memory for testing)
+- phpunit
 
 Optional
 
@@ -57,6 +58,10 @@ Update node and bower dependencies
 ## Launch the application
 
     $ php artisan serve
+    
+### Testing
+
+    $ phpunit
 
 ## API
 
