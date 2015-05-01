@@ -103,23 +103,28 @@ class ConvosServiceTest extends TestCase
             ]);
         }
 
-        $result = $convoService->getConvoMessages($convo->id);
+        $result = $convoService->getConvoMessages($convo->id, $users->get(0)->id);
         $this->assertEquals(10, sizeof($result['messages']));
         $this->assertEquals(10, $result['pagination']['count']);
         $this->assertEquals(1, $result['pagination']['page']);
         $this->assertEquals(25, $result['pagination']['limit']);
 
 
-        $result = $convoService->getConvoMessages($convo->id, $limit = 2);
+        $result = $convoService->getConvoMessages($convo->id, $users->get(1)->id, $limit = 2);
         $this->assertEquals(10, $result['pagination']['count']);
         $this->assertEquals(2, sizeof($result['messages']));
 
-        $result = $convoService->getConvoMessages($convo->id, $limit = 3, $page = 2);
+        $result = $convoService->getConvoMessages($convo->id, $users->get(0)->id, $limit = 3, $page = 2);
         $this->assertEquals(10, $result['pagination']['count']);
         $this->assertEquals(3, sizeof($result['messages']));
 
-        $result = $convoService->getConvoMessages($convo->id, $limit = 1, $page = 1, $until = Carbon::yesterday()->toIso8601String());
+        $result = $convoService->getConvoMessages(
+            $convo->id, $users->get(1)->id, $limit = 1, $page = 1, $until = Carbon::yesterday()->toIso8601String()
+        );
         $this->assertEquals(0, $result['pagination']['count']);
+        $this->assertEquals(0, sizeof($result['messages']));
+
+        $result = $convoService->getConvoMessages($convo->id, $this->faker->numberBetween($min = 1000, $max = 9000));
         $this->assertEquals(0, sizeof($result['messages']));
     }
 

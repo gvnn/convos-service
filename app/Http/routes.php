@@ -18,22 +18,38 @@ Route::group(['prefix' => '/api/v1'], function () {
     // get list of conversations
     Route::get('convos', [
         'before' => 'oauth',
-        'uses' => 'ConvosController@all'
+        'uses' => 'ConvosController@find'
     ]);
 
     // create a new conversation
+    Route::post('convos', [
+        'before' => 'oauth',
+        'uses' => 'ConvosController@create'
+    ]);
 
     // get conversation details
+    Route::get('convos/{id}', [
+        'before' => 'oauth',
+        'uses' => 'ConvosController@get'
+    ])->where('id', '[0-9]+');
 
     // update conversation
+    Route::put('convos/{id}', [
+        'before' => 'oauth',
+        'uses' => 'ConvosController@update'
+    ])->where('id', '[0-9]+');
+
+    // delete conversation
+    Route::put('convos/{id}', [
+        'before' => 'oauth',
+        'uses' => 'ConvosController@delete'
+    ])->where('id', '[0-9]+');
 
     // create a new message
 
     // get conversation messages
 
     // delete message
-
-    // delete conversation
 
 });
 

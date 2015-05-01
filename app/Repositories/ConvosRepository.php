@@ -76,15 +76,19 @@ class ConvosRepository implements ConvosRepositoryInterface
         return Conversation::find($convoId);
     }
 
-    public function getConvoMessages($convoId, $intLimit, $intPage, $untilDate)
+    public function getConvoMessages($convoId, $userId, $intLimit, $intPage, $untilDate)
     {
-        $table = with(new Message)->getTable();
-        $base_query = DB::table($table)
-            ->where('conversation_id', $convoId)
-            ->whereNull('deleted_at');
+        $messagesTable = with(new Message)->getTable();
+        $participantsTable = with(new Participant)->getTable();
+        $base_query = DB::table($messagesTable)
+            ->join($participantsTable, $participantsTable . '.conversation_id', '=', $messagesTable . '.conversation_id')
+            ->where($messagesTable . '.conversation_id', $convoId)
+            ->where($participantsTable . '.user_id', $userId)
+            ->whereNull($messagesTable . '.deleted_at')
+            ->whereNull($participantsTable . '.deleted_at');
 
         if (!is_null($untilDate)) {
-            $base_query = $base_query->where('created_at', '<=', $untilDate);
+            $base_query = $base_query->where($messagesTable . '.created_at', '<=', $untilDate);
         }
 
         $result = [
