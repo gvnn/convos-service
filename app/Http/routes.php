@@ -40,7 +40,7 @@ Route::group(['prefix' => '/api/v1'], function () {
     ])->where('id', '[0-9]+');
 
     // delete conversation
-    Route::put('convos/{id}', [
+    Route::delete('convos/{id}', [
         'before' => 'oauth',
         'uses' => 'ConvosController@delete'
     ])->where('id', '[0-9]+');

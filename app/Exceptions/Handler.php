@@ -39,32 +39,31 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $e)
     {
-        if ($request->isJson()) {
+        $status = 500;
+        $message = [
+            'error' => ' 500 Internal Server Error',
+            'error_description' => 'The server encountered an unexpected condition which prevented it from fulfilling the request.'
+        ];
 
-            $status = 500;
+        if ($e instanceof ModelNotFoundException) {
+            $status = 404;
             $message = [
-                'error' => ' 500 Internal Server Error',
-                'error_description' => 'The server encountered an unexpected condition which prevented it from fulfilling the request.'
+                'error' => '404 Not Found',
+                'error_description' => 'The server has not found anything matching the Request-URI'
             ];
-
-            if ($e instanceof ModelNotFoundException) {
-                $status = 404;
-                $message = [
-                    'error' => '404 Not Found',
-                    'error_description' => 'The server has not found anything matching the Request-URI'
-                ];
-            } elseif ($e instanceof ConvosException) {
-                $status = 400;
-                $message = [
-                    'error' => '400 Bad Request',
-                    'error_description' => $e->getValidationError()
-                ];
-            }
-
-            return response()->json($message, $status);
-        } else {
-            return parent::render($request, $e);
+        } elseif ($e instanceof ConvosException) {
+            $status = 400;
+            $message = [
+                'error' => '400 Bad Request',
+                'error_description' => $e->getValidationError()
+            ];
         }
+
+        if (env('APP_DEBUG', false)) {
+            $message['trace'] = $e->getTrace();
+        }
+
+        return response()->json($message, $status);
     }
 }
 

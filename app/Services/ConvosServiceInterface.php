@@ -12,9 +12,9 @@ interface ConvosServiceInterface
 
     public function getConversations($userId, $limit = 25, $page = 1, $until = null);
 
-    public function markConversationAsRead($convoId, $userId);
-
     public function deleteConversationMessage($convoId, $userId, $messageId);
 
     public function deleteConversation($convoId, $userId);
+
+    public function updateConversation($convoId, $userId, array $data);
 }

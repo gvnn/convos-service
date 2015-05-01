@@ -116,7 +116,13 @@ class ConvosRepository implements ConvosRepositoryInterface
             ->where($participantsTable . '.user_id', $userId)
             ->whereNull($convosTable . '.deleted_at')
             ->whereNull($participantsTable . '.deleted_at')
-            ->select($convosTable . '.id', $participantsTable . '.updated_at');
+            ->select(
+                $convosTable . '.id',
+                $convosTable . '.subject',
+                $participantsTable . '.updated_at',
+                $participantsTable . '.is_read',
+                $convosTable . '.created_by'
+            );
 
         if (!is_null($pagination['until'])) {
             $base_query = $base_query->where($convosTable . '.created_at', '<=', $pagination['until']);
@@ -162,5 +168,20 @@ class ConvosRepository implements ConvosRepositoryInterface
         $message->delete();
 
         return $message;
+    }
+
+    public function markConversationAsRead($convoId, $userId, $is_read)
+    {
+        // find the participant
+        $participant = Participant::where(
+            'conversation_id', $convoId
+        )->where('user_id', $userId)->firstOrFail();
+
+        $participant->is_read = $is_read;
+        $participant->read_at = $is_read ? Carbon::now() : null;
+
+        $participant->save();
+
+        return $participant->conversation;
     }
 }

@@ -231,4 +231,36 @@ class ConvosServiceTest extends TestCase
         $this->assertEquals(0, $result['pagination']['count']);
     }
 
+    public function testMarkConversationRead()
+    {
+        $users = \App\Model\User::all();
+        $convoService = new ConvosService(new ConvosRepository());
+
+        // create 1 convos
+        $convo = $this->_newConvo($users, $convoService);
+
+        // user 1 marks it as read
+        $convoService->updateConversation(
+            $convo->id,
+            $users->get(0)->id,
+            ['is_read' => true]
+        );
+
+        // user 2 don't
+        $convoService->updateConversation(
+            $convo->id,
+            $users->get(1)->id,
+            ['is_read' => false]
+        );
+
+        // get the list for user 1
+        $result = $convoService->getConversations($users->get(0)->id, $limit = 1);
+        $this->assertEquals(1, $result['conversations'][0]->is_read);
+
+        $result = $convoService->getConversations($users->get(1)->id, $limit = 1);
+        $this->assertEquals(0, $result['conversations'][0]->is_read);
+
+    }
+
+
 }

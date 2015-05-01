@@ -15,15 +15,25 @@ class ConvosControllerTest extends TestCase
 
     public function testConversationNotFound()
     {
-        $token = $this->_getUserToken('foo@domain.com', 'test');
-
-        $response = $this->call('GET', '/api/v1/convos/1', [], [], [],
-            [
-                'HTTP_AUTHORIZATION' => 'Bearer ' . $token->access_token,
-                'HTTP_CONTENT_TYPE' => 'application/json',
-                'HTTP_ACCEPT' => 'application/json']);
-
+        $headers = $this->_getHeaders('foo@domain.com', 'test');
+        $response = $this->call('GET', '/api/v1/convos/1', [], [], [], $headers);
         $this->assertEquals(404, $response->getStatusCode());
+
+        $response = $this->call('PUT', '/api/v1/convos/1', ['is_read' => true], [], [], $headers);
+        $this->assertEquals(404, $response->getStatusCode());
+
+        $response = $this->call('DELETE', '/api/v1/convos/1', [], [], [], $headers);
+        $this->assertEquals(404, $response->getStatusCode());
+    }
+
+    private function _getHeaders($username, $password)
+    {
+        $token = $this->_getUserToken($username, $password);
+        return [
+            'HTTP_AUTHORIZATION' => 'Bearer ' . $token->access_token,
+            'HTTP_CONTENT_TYPE' => 'application/json',
+            'HTTP_ACCEPT' => 'application/json'
+        ];
     }
 
     private function _getUserToken($username, $password)
@@ -35,9 +45,20 @@ class ConvosControllerTest extends TestCase
             'client_id' => 'client1id',
             'client_secret' => 'client1secret'
         ]);
+        return $this->parseJson($response);
+    }
 
-        $jsonResponse = $response->getContent();
-        return json_decode($jsonResponse);
+    public function testBadRequest()
+    {
+        $response = $this->call('POST', '/api/v1/convos', [], [], [],
+            $this->_getHeaders('foo@domain.com', 'test')
+        );
+        $this->assertEquals(400, $response->getStatusCode());
+
+        $json = $this->parseJson($response);
+
+        // check one of the errors
+        $this->assertEquals($json->error_description->subject[0], 'The subject field is required.');
     }
 
 }

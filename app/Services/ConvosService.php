@@ -144,17 +144,6 @@ class ConvosService implements ConvosServiceInterface
         return $this->repository->getConversations($userId, $pagination);
     }
 
-    public function markConversationAsRead($convoId, $userId)
-    {
-        $this->_validate(
-            ['userId' => $userId, 'convoId' => $convoId],
-            [
-                'convoId' => 'required|integer|min:1',
-                'userId' => 'required|integer|min:1'
-            ]
-        );
-    }
-
     /**
      * Deletes a message from a conversation
      *
@@ -194,5 +183,17 @@ class ConvosService implements ConvosServiceInterface
             ]
         );
         return $this->repository->deleteConversation($convoId, $userId);
+    }
+
+    public function updateConversation($convoId, $userId, array $data)
+    {
+        // At the moment this method only marks the conversation as read
+        $this->_validate(
+            $data,
+            [
+                'is_read' => 'required|boolean'
+            ]
+        );
+        return $this->repository->markConversationAsRead($convoId, $userId, $data['is_read']);
     }
 }

@@ -40,4 +40,9 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase
         Mail::pretend(true);
     }
 
+    protected function parseJson($response)
+    {
+        $jsonResponse = $response->getContent();
+        return json_decode($jsonResponse);
+    }
 }

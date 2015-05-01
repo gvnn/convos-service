@@ -19,4 +19,7 @@ interface ConvosRepositoryInterface
     public function deleteConversation($convoId, $userId);
 
     public function deleteConversationMessage($convoId, $userId, $messageId);
+
+    public function markConversationAsRead($convoId, $userId, $is_read);
+
 }
