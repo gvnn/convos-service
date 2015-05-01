@@ -9,19 +9,19 @@ use Carbon\Carbon;
 class ConvosRepository implements ConvosRepositoryInterface
 {
 
-    public function create_convo($user_id, $subject)
+    public function createConvo($userId, $subject)
     {
         $convo = new Conversation;
 
         $convo->subject = $subject;
-        $convo->created_by = $user_id;
+        $convo->created_by = $userId;
 
         $convo->save();
 
         return $convo;
     }
 
-    public function add_convo_participants(Conversation $convo, $creator, array $participants)
+    public function addConvoParticipants(Conversation $convo, $creator, array $participants)
     {
         $participantsArray = [
             new Participant(['user_id' => $creator, 'is_creator' => true, 'is_read' => true, 'read_at' => Carbon::now()])
@@ -42,14 +42,21 @@ class ConvosRepository implements ConvosRepositoryInterface
         return $convo;
     }
 
-    public function add_message(Conversation $convo, $user_id, $body)
+    public function addMessage(Conversation $convo, $userId, $body)
     {
-        $convo->messages()->save(new Message([
-            'user_id' => $user_id,
+        $message = new Message([
+            'user_id' => $userId,
             'body' => $body
-        ]));
+        ]);
 
-        return $convo;
+        $convo->messages()->save($message);
+
+        return $message;
+    }
+
+    public function getConvo($convoId)
+    {
+        return Conversation::find($convoId);
     }
 
 }

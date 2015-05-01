@@ -14,9 +14,27 @@
 Route::get('/', 'WelcomeController@index');
 
 Route::group(['prefix' => '/api/v1'], function () {
-    Route::get('convos', ['before' => 'oauth', function () {
-        return 'ok';
-    }]);
+
+    // get list of conversations
+    Route::get('convos', [
+        'before' => 'oauth',
+        'uses' => 'ConvosController@all'
+    ]);
+
+    // create a new conversation
+
+    // get conversation details
+
+    // update conversation
+
+    // create a new message
+
+    // get conversation messages
+
+    // delete message
+
+    // delete conversation
+
 });
 
 Route::post('oauth/access_token', function () {
