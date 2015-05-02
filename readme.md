@@ -54,6 +54,32 @@ Update node and bower dependencies
     $ bower install
     $ gulp
 
+### Configuration
+
+The application uses .env library [https://github.com/vlucas/phpdotenv](https://github.com/vlucas/phpdotenv). By default
+it connects to a mysql database called *convos*, with username and passowrd *convos*. To change the settings simply
+create a .evn file, below an example
+
+    APP_ENV=local
+    APP_DEBUG=true
+    APP_KEY=B5UwJsg7VpNewUGAfiIz3glPeEqwKAmL
+
+    DB_CONNECTION=mysql
+    DB_HOST=localhost
+    DB_DATABASE=convos
+    DB_USERNAME=convos
+    DB_PASSWORD=convos
+
+    CACHE_DRIVER=file
+    SESSION_DRIVER=file
+    QUEUE_DRIVER=sync
+
+    MAIL_DRIVER=smtp
+    MAIL_HOST=mailtrap.io
+    MAIL_PORT=2525
+    MAIL_USERNAME=null
+    MAIL_PASSWORD=null
+
 
 ## Launch the application
 
