@@ -33,7 +33,7 @@ class ConvosService implements ConvosServiceInterface
         $this->_validate($data, [
             'user_id' => 'required|integer|min:1',
             'subject' => 'required|max:140',
-            'recipient' => 'required|integer|min:1',
+            'recipient' => 'required|integer|min:1|different:user_id', // recipient must be different
             'body' => 'required'
         ]);
 

@@ -81,6 +81,19 @@ class ConvosServiceTest extends TestCase
         $this->assertFalse($convo->participants->get(1)->is_creator);
     }
 
+    /**
+     * @expectedException App\Model\ConvosException
+     */
+    public function testCreateSameUser()
+    {
+        $users = \App\Model\User::all();
+        // setting user 1 to be the same as user 0 to test the validation
+        $users[1] = $users[0];
+        // create convo
+        $convoService = new ConvosService(new ConvosRepository());
+        $this->_newConvo($users, $convoService); // Boom!
+    }
+
     public function testAddMessage()
     {
         $users = \App\Model\User::all();
