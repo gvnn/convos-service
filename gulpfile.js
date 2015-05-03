@@ -11,7 +11,7 @@ var elixir = require('laravel-elixir');
  |
  */
 
-elixir(function(mix) {
+elixir(function (mix) {
     mix.less([
         'app.less',
         '../components/bootstrap/less/bootstrap.less'
@@ -19,6 +19,12 @@ elixir(function(mix) {
 
     mix.scripts([
         "components/jquery/dist/jquery.js",
-        "components/bootstrap/dist/js/bootstrap.js"
-    ], 'public/js/app.js', 'resources/assets');
+        "components/bootstrap/dist/js/bootstrap.js",
+        "components/react/react-with-addons.min.js",
+        "components/react/JSXTransformer.js"
+    ], 'public/js/components.js', 'resources/assets');
+
+    mix.scripts([
+        "js/console.js"
+    ], 'public/js/console.js', 'resources/assets');
 });
