@@ -67,7 +67,7 @@ Optional
 
 The application uses .env library [https://github.com/vlucas/phpdotenv](https://github.com/vlucas/phpdotenv). By default
 it connects to a mysql database called *convos*, with username and passowrd *convos*. To change the settings simply
-create a .evn file, below an example
+create a .env file, below an example
 
     APP_ENV=local
     APP_DEBUG=true
