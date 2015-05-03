@@ -5,6 +5,17 @@ convos-service
 
 convos-service is site messaging micro service.
 
+This api allows users to send short messages to each other, similar to email.
+Each conversation (convo) has the following attributes:
+
+- A sender
+- A recipient
+- A subject line, max 140 characters
+- A body, max 64k characters
+- A status to show if the convo has been read
+
+Additionally, conversations (convos) are grouped by threads, and each conversation can have multiple participants.
+
 ## Requirements
 
 The Laravel framework has a few system requirements:
@@ -315,7 +326,9 @@ Updates a conversation
 
 #### DELETE /api/v1/convos/[id]
 
-Deletes a conversation
+Deletes a conversation. This method instead of deleting the conversation it deletes a "participation". This means that
+if a user deletes a conversation it doesn't disappear in others list. If one of the participants sends a new message
+the conversation reappears in the user that deleted it.
 
 **curl**
 
@@ -398,7 +411,7 @@ Returns a list of messages in a conversation
 
 #### DELETE /api/v1/convos/[id]/messages/[id]
 
-Deletes a message from the conversation
+Deletes a message from the conversation.
 
 **curl**
 
@@ -417,5 +430,57 @@ Deletes a message from the conversation
 		"updated_at": "2015-05-01 17:07:45"
 	}
 
+## Data Structure
 
+### DB
 
+![Alt text](database/eer.png)
+
+#### users
+
+| Column         | Type         | Description                      |
+|----------------|--------------|----------------------------------|
+| id             | int          | User Id                          |
+| name           | varchar(255) | User Name                        |
+| email          | varchar(255) | User Email                       |
+| password       | varchar(60)  | User Password                    |
+| remember_token | varchar(100) | Token for "remember me" sessions |
+| created_at     | timestamp    | Date creation. UTC               |
+| updated_at     | timestamp    | Date last update. UTC            |
+
+#### convos_conversations
+
+| Column     | Type         | Description                           |
+|------------|--------------|---------------------------------------|
+| id         | int          | Conversation Id                       |
+| subject    | varchar(140) | Conversation subject                  |
+| created_by | int          | User Id that created the conversation |
+| created_at | timestamp    | Date creation. UTC                    |
+| updated_at | timestamp    | Date last update. UTC                 |
+| deleted_at | timestamp    | Date Deleted.                         |
+
+#### convos_participants
+
+| Column          | Type       | Description                                                        |
+|-----------------|------------|--------------------------------------------------------------------|
+| id              | int        | Participation Id                                                   |
+| is_creator      | tinyint(1) | Flag that indicates if the user is the creator of the conversation |
+| is_read         | tinyint(1) | Flag that indicates if the conversation has been read              |
+| read_at         | datetime   | Date last read.                                                    |
+| user_id         | int        | User Id                                                            |
+| conversation_id | int        | Conversation Id                                                    |
+| created_at      | timestamp  | Date creation. UTC                                                 |
+| updated_at      | timestamp  | Date last update. UTC                                              |
+| deleted_at      | timestamp  | Date Deleted. UTC                                                  |
+
+#### convos_messages
+
+| Column          | Type      | Description           |
+|-----------------|-----------|-----------------------|
+| id              | int       | Message Id            |
+| conversation_id | int       | Conversation Id       |
+| body            | text      | Message body          |
+| user_id         | int       | User Id               |
+| created_at      | timestamp | Date creation. UTC    |
+| updated_at      | timestamp | Date last update. UTC |
+| deleted_at      | timestamp | Date Deleted. UTC     |
