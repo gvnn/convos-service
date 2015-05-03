@@ -118,19 +118,13 @@ class ConvosRepository implements ConvosRepositoryInterface
     {
         $convosTable = with(new Conversation)->getTable();
         $participantsTable = with(new Participant)->getTable();
+        $messagesTable = with(new Message)->getTable();
 
         $base_query = DB::table($convosTable)
             ->join($participantsTable, $participantsTable . '.conversation_id', '=', $convosTable . '.id')
             ->where($participantsTable . '.user_id', $userId)
             ->whereNull($convosTable . '.deleted_at')
-            ->whereNull($participantsTable . '.deleted_at')
-            ->select(
-                $convosTable . '.id',
-                $convosTable . '.subject',
-                $participantsTable . '.updated_at',
-                $participantsTable . '.is_read',
-                $convosTable . '.created_by'
-            );
+            ->whereNull($participantsTable . '.deleted_at');
 
         if (!is_null($pagination['until'])) {
             $base_query = $base_query->where($convosTable . '.created_at', '<=', $pagination['until']);
@@ -143,6 +137,24 @@ class ConvosRepository implements ConvosRepositoryInterface
                 'count' => $base_query->count()
             ],
             'conversations' => $base_query
+                ->select(
+                    DB::raw(
+                        '`' . $convosTable . '`.`id`,`' . $convosTable . '`.`subject`,`' . $participantsTable .
+                        '`.`updated_at`,`' . $participantsTable . '`.`is_read`,`' . $convosTable .
+                        '`.`created_by`,count(`' . $messagesTable . '`.`id`) as messages'
+                    )
+                )
+                ->leftJoin($messagesTable, function ($join) use ($messagesTable, $convosTable) {
+                    $join->on($convosTable . '.id', '=', $messagesTable . '.conversation_id')
+                        ->whereNull($messagesTable . '.deleted_at');
+                })
+                ->groupBy(
+                    $convosTable . '.id',
+                    $convosTable . '.subject',
+                    $participantsTable . '.updated_at',
+                    $participantsTable . '.is_read',
+                    $convosTable . '.created_by'
+                )
                 ->orderBy($participantsTable . '.updated_at', 'desc')
                 ->orderBy($convosTable . '.updated_at', 'desc')
                 ->orderBy($convosTable . '.id', 'desc')

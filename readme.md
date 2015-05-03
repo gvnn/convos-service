@@ -278,28 +278,30 @@ Get list of conversations
 **response**
 
 	{
-		"pagination": {
-		    "page": 1,
-		    "limit": 2,
-		    "count": 7
-		},
-		"conversations": [
-		    {
-		        "id": "12",
-		        "subject": "test",
-		        "updated_at": "2015-05-01 16:34:34",
-		        "is_read": "1",
-		        "created_by": "1"
-		    },
-		    {
-		        "id": "11",
-		        "subject": "test",
-		        "updated_at": "2015-05-01 16:33:00",
-		        "is_read": "1",
-		        "created_by": "1"
-		    }
-		]
-	}
+        "pagination": {
+            "page": 1,
+            "limit": 2,
+            "count": 2
+        },
+        "conversations": [
+            {
+                "id": "1",
+                "subject": "test",
+                "updated_at": "2015-05-03 10:46:06",
+                "is_read": "1",
+                "created_by": "1",
+                "messages": "2"
+            },
+            {
+                "id": "2",
+                "subject": "test",
+                "updated_at": "2015-05-03 10:44:53",
+                "is_read": "1",
+                "created_by": "1",
+                "messages": "1"
+            }
+        ]
+    }
 
 #### PUT /api/v1/convos/[id]
 
