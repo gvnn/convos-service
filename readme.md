@@ -57,13 +57,11 @@ Optional
         $ php artisan migrate
         $ php artisan db:seed
 
-### Optional
+4. Update node and bower dependencies
 
-Update node and bower dependencies
-
-    $ npm install
-    $ bower install
-    $ gulp
+        $ npm install
+        $ bower install
+        $ gulp
 
 ### Configuration
 
@@ -106,6 +104,11 @@ The api comes with already 2 registered users and 2 client applications.
 
 - users: foo@domain.com/test and bar@domain.com/test
 - applications: client1id/client1secret and client2id/client2secret
+
+### Web console
+
+The application comes with a very basic react component for testing the api endpoint.
+Just open the website root in your favourite (modern) browser. 
 
 ### Authentication
 
