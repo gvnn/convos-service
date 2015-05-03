@@ -42,20 +42,25 @@ class Handler extends ExceptionHandler
     {
         $status = 500;
         $message = [
+            'status_code' => $status,
             'error_description' => 'Internal Server Error'
         ];
 
         if ($e instanceof HttpExceptionInterface) {
             $status = $e->getStatusCode();
-            $message = [];
+            $message = [
+                'status_code' => $e->getStatusCode()
+            ];
         } elseif ($e instanceof ModelNotFoundException) {
             $status = 404;
             $message = [
+                'status_code' => $status,
                 'error_description' => 'Item not found'
             ];
         } elseif ($e instanceof ConvosException) {
             $status = 400;
             $message = [
+                'status_code' => $status,
                 'error_description' => $e->getValidationError()
             ];
         }

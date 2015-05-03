@@ -14,7 +14,9 @@
         <div class="page-header">
             <h1>Convos</h1>
         </div>
+        <div id="console"></div>
     </div>
-    <script src="js/app.js"></script>
+    <script src="js/components.js"></script>
+    <script type="text/jsx" src="js/console.js"></script>
 </body>
 </html>
