@@ -7,9 +7,21 @@ use App\Model\Convos\Participant;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Conversations data repository
+ *
+ * @package App\Repositories
+ */
 class ConvosRepository implements ConvosRepositoryInterface
 {
 
+    /**
+     * Create a new conversation
+     *
+     * @param $userId
+     * @param $subject
+     * @return Conversation
+     */
     public function createConversation($userId, $subject)
     {
         $convo = new Conversation;
@@ -22,6 +34,14 @@ class ConvosRepository implements ConvosRepositoryInterface
         return $convo;
     }
 
+    /**
+     * Add participants to a selected conversation
+     *
+     * @param Conversation $convo
+     * @param $creator
+     * @param array $participants
+     * @return Conversation
+     */
     public function addConversationParticipants(Conversation $convo, $creator, array $participants)
     {
         $participantsArray = [
@@ -43,6 +63,14 @@ class ConvosRepository implements ConvosRepositoryInterface
         return $convo;
     }
 
+    /**
+     * Add a new message to a selected conversation
+     *
+     * @param Conversation $convo
+     * @param $userId
+     * @param $body
+     * @return Message
+     */
     public function addConversationMessage(Conversation $convo, $userId, $body)
     {
         $message = new Message([
@@ -71,6 +99,13 @@ class ConvosRepository implements ConvosRepositoryInterface
         return $message;
     }
 
+    /**
+     * Retrieve a conversation
+     *
+     * @param $convoId
+     * @param $userId
+     * @return mixed
+     */
     public function getConversation($convoId, $userId)
     {
         $conversation = Participant::where('conversation_id', $convoId)->where('user_id', $userId)->firstOrFail()->conversation;
@@ -78,6 +113,14 @@ class ConvosRepository implements ConvosRepositoryInterface
         return $conversation;
     }
 
+    /**
+     * Get the list of messages in a conversation
+     *
+     * @param $convoId
+     * @param $userId
+     * @param array $pagination
+     * @return array
+     */
     public function getConversationMessages($convoId, $userId, array $pagination)
     {
         $messagesTable = with(new Message)->getTable();
@@ -114,6 +157,13 @@ class ConvosRepository implements ConvosRepositoryInterface
         return $result;
     }
 
+    /**
+     * Get list of conversations that a user participates
+     *
+     * @param $userId
+     * @param array $pagination
+     * @return array
+     */
     public function getConversations($userId, array $pagination)
     {
         $convosTable = with(new Conversation)->getTable();
@@ -165,6 +215,13 @@ class ConvosRepository implements ConvosRepositoryInterface
         return $result;
     }
 
+    /**
+     * Deletes a participation to a conversation
+     *
+     * @param $convoId
+     * @param $userId
+     * @return mixed
+     */
     public function deleteConversation($convoId, $userId)
     {
         //find a participation
@@ -179,6 +236,14 @@ class ConvosRepository implements ConvosRepositoryInterface
         return $convo;
     }
 
+    /**
+     * Deletes a conversation
+     *
+     * @param $convoId
+     * @param $userId
+     * @param $messageId
+     * @return mixed
+     */
     public function deleteConversationMessage($convoId, $userId, $messageId)
     {
         // find message, only the creator can delete that
@@ -192,6 +257,14 @@ class ConvosRepository implements ConvosRepositoryInterface
         return $message;
     }
 
+    /**
+     * Mark a conversation as read/unread
+     *
+     * @param $convoId
+     * @param $userId
+     * @param $is_read
+     * @return mixed
+     */
     public function markConversationAsRead($convoId, $userId, $is_read)
     {
         // find the participant

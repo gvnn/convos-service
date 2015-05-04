@@ -7,8 +7,16 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Mockery\CountValidator\Exception;
 
+/**
+ * Class ConvosService
+ *
+ * @package App\Services
+ */
 class ConvosService implements ConvosServiceInterface
 {
+    /**
+     * @param ConvosRepositoryInterface $repository
+     */
     function __construct(ConvosRepositoryInterface $repository)
     {
         $this->repository = $repository;
@@ -219,6 +227,7 @@ class ConvosService implements ConvosServiceInterface
      * @param $convoId
      * @param $userId
      * @param $messageId
+     * @return mixed
      * @throws ConvosException
      */
     public function deleteConversationMessage($convoId, $userId, $messageId)

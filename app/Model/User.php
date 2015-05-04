@@ -6,6 +6,10 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * User
+ * @package App\Model
+ */
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract
 {
 
@@ -32,6 +36,9 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      */
     protected $hidden = ['password', 'remember_token'];
 
+    /**
+     * @return \App\Model\Convos\Conversation array
+     */
     public function conversations()
     {
         return $this->hasManyThrough('App\Model\Convos\Conversation', 'App\Model\Model\Participant');

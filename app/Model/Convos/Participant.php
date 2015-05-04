@@ -3,6 +3,11 @@
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * Conversation Participant
+ *
+ * @package App\Model\Convos
+ */
 class Participant extends Model
 {
     protected $table = 'convos_participants';
@@ -20,11 +25,17 @@ class Participant extends Model
         'is_read' => 'boolean'
     ];
 
+    /**
+     * @return \App\Model\Convos\Conversation
+     */
     public function conversation()
     {
         return $this->belongsTo('App\Model\Convos\Conversation');
     }
 
+    /**
+     * @return \App\Model\User
+     */
     public function user()
     {
         return $this->belongsTo('App\Model\User');
