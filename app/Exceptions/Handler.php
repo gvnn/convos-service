@@ -4,6 +4,7 @@ use App\Model\ConvosException;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
 class Handler extends ExceptionHandler
@@ -67,6 +68,7 @@ class Handler extends ExceptionHandler
 
         if (env('APP_DEBUG', false)) {
             $message['trace'] = $e->getTrace();
+            Log::error($e);
         }
 
         return response()->json($message, $status);
